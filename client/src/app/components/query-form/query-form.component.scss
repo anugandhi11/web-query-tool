@@ -1,0 +1,53 @@
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+small {
+  display: block;
+  margin-top: 0.25rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin-bottom: 0;
+  }
+}
+
+.btn-copy {
+  padding: 0.5rem 1rem;
+  background: #28a745;
+  font-size: 0.9rem;
+}
+
+h3 {
+  color: #555;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.items-list {
+  list-style: none;
+
+  li {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: white;
+    border-radius: 6px;
+    border-left: 3px solid #667eea;
+    word-break: break-all;
+
+    strong {
+      color: #667eea;
+      margin-right: 0.5rem;
+    }
+  }
+}

@@ -1,0 +1,101 @@
+<div class="card">
+  <h2>Query Web Pages</h2>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="url">URL *</label>
+      <input
+        type="url"
+        id="url"
+        name="url"
+        [(ngModel)]="url"
+        placeholder="https://example.com"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="queryType">Query Type *</label>
+      <select id="queryType" name="queryType" [(ngModel)]="queryType">
+        <option *ngFor="let type of queryTypes" [value]="type.value">
+          {{ type.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="selector">CSS Selector (optional)</label>
+      <input
+        type="text"
+        id="selector"
+        name="selector"
+        [(ngModel)]="selector"
+        placeholder=".content, #main, article, etc."
+      />
+      <small>Leave empty to query the entire page</small>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="loading || !url">
+        {{ loading ? 'Querying...' : 'Query' }}
+      </button>
+      <button type="button" class="btn-secondary" (click)="clear()">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card" *ngIf="error">
+  <div class="alert alert-error">
+    {{ error }}
+  </div>
+</div>
+
+<div class="card" *ngIf="loading">
+  <div class="loading">
+    <p>Fetching data from the web page</p>
+  </div>
+</div>
+
+<div class="card" *ngIf="hasResults">
+  <div class="result-header">
+    <h2>Results</h2>
+    <button type="button" class="btn-copy" (click)="copyToClipboard()">
+      📋 Copy
+    </button>
+  </div>
+
+  <div *ngIf="response?.metadata && metadataEntries.length > 0">
+    <h3>Page Metadata</h3>
+    <ul class="metadata-list">
+      <li *ngFor="let entry of metadataEntries">
+        <strong>{{ entry.key }}:</strong> {{ entry.value }}
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="response?.items && response.items.length > 0">
+    <h3>Found {{ response.items.length }} item(s)</h3>
+    <div class="result-container">
+      <ul class="items-list">
+        <li *ngFor="let item of response.items; let i = index">
+          <strong>{{ i + 1 }}.</strong> {{ item }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div *ngIf="response?.content">
+    <h3>Content</h3>
+    <div class="result-container">
+      <pre>{{ response.content }}</pre>
+    </div>
+  </div>
+
+  <div *ngIf="!response?.content && !response?.items && !response?.metadata">
+    <div class="alert alert-success">
+      Query completed successfully but no content was found.
+    </div>
+  </div>
+</div>

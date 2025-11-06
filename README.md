@@ -1,6 +1,12 @@
-# Web Query Tool API
+# Web Query Tool
 
-A .NET 8 Web API for querying web pages and extracting content using CSS selectors.
+A full-stack web application for querying web pages and extracting content using CSS selectors.
+
+## Overview
+
+This project consists of:
+- **Backend**: .NET 8 Web API for web scraping and content extraction
+- **Frontend**: Angular 19 SPA with beautiful UI and responsive design
 
 ## Features
 
@@ -13,11 +19,19 @@ A .NET 8 Web API for querying web pages and extracting content using CSS selecto
 
 ## Technology Stack
 
+### Backend
 - **.NET 8**: Latest .NET framework
-- **ASP.NET Core Web API**: For building RESTful APIs
+- **ASP.NET Core Web API**: RESTful API
 - **AngleSharp**: HTML parsing and DOM manipulation
 - **Swagger/OpenAPI**: API documentation
 - **HtmlAgilityPack**: HTML parsing library
+- **xUnit, Moq, FluentAssertions**: Testing
+
+### Frontend
+- **Angular 19**: Modern Angular with standalone components
+- **TypeScript 5.6**: Type-safe development
+- **RxJS 7.8**: Reactive programming
+- **SCSS**: Enhanced styling
 
 ## API Endpoints
 
@@ -70,35 +84,53 @@ Health check endpoint
 
 ### Prerequisites
 - .NET 8 SDK
+- Node.js 18+ and npm
 
-### Installation
+### Quick Start
 
-1. Clone the repository:
+#### Backend API
+
+1. Clone and navigate to the repository:
 ```bash
 git clone <repository-url>
 cd web-query-tool
 ```
 
-2. Restore dependencies:
+2. Restore and build:
 ```bash
 dotnet restore
-```
-
-3. Build the project:
-```bash
 dotnet build
 ```
 
-4. Run the API:
+3. Run the API:
 ```bash
 dotnet run --project src/WebQueryTool.Api
 ```
 
 The API will be available at `https://localhost:5001` (or `http://localhost:5000`)
 
-### Swagger UI
+**Swagger UI**: Access at `https://localhost:5001/swagger`
 
-Access the Swagger UI at: `https://localhost:5001/swagger`
+#### Frontend Application
+
+1. Navigate to client directory:
+```bash
+cd client
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm start
+```
+
+The Angular app will be available at `http://localhost:4200`
+
+**Note**: Make sure the backend API is running before starting the frontend.
 
 ### Running with Docker
 
@@ -138,8 +170,26 @@ dotnet watch test --project tests/WebQueryTool.Api.Tests
 web-query-tool/
 ├── .github/
 │   └── workflows/
-│       └── dotnet.yml          # CI/CD workflow
-├── src/
+│       └── dotnet.yml              # CI/CD workflow
+├── client/                          # Angular 19 Frontend
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── components/
+│   │   │   │   └── query-form/    # Main form component
+│   │   │   ├── models/            # TypeScript interfaces
+│   │   │   ├── services/          # API services
+│   │   │   ├── app.component.ts
+│   │   │   ├── app.config.ts
+│   │   │   └── app.routes.ts
+│   │   ├── environments/          # Environment configs
+│   │   ├── index.html
+│   │   ├── main.ts
+│   │   └── styles.scss
+│   ├── angular.json
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── README.md
+├── src/                             # .NET 8 Backend
 │   └── WebQueryTool.Api/
 │       ├── Controllers/
 │       │   └── WebQueryController.cs
@@ -150,18 +200,14 @@ web-query-tool/
 │       │   ├── IWebQueryService.cs
 │       │   └── WebQueryService.cs
 │       ├── Program.cs
-│       ├── appsettings.json
 │       └── WebQueryTool.Api.csproj
 ├── tests/
 │   └── WebQueryTool.Api.Tests/
 │       ├── Controllers/
-│       │   └── WebQueryControllerTests.cs
 │       ├── Services/
-│       │   └── WebQueryServiceTests.cs
 │       └── WebQueryTool.Api.Tests.csproj
-├── Dockerfile                   # Docker build configuration
-├── docker-compose.yml           # Docker Compose configuration
-├── .editorconfig                # Code formatting rules
+├── Dockerfile                       # Docker build configuration
+├── docker-compose.yml               # Docker Compose configuration
 └── WebQueryTool.sln
 ```
 
