@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database for storing application metadata
+  postgres:
+    image: postgres:16-alpine
+    container_name: webquerytool-postgres
+    environment:
+      POSTGRES_DB: webquerytool
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - webquerytool-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API (ASP.NET Core)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: webquerytool-backend
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=webquerytool;Username=postgres;Password=postgres
+      - JwtSettings__SecretKey=your-super-secret-key-min-32-characters-long-change-in-production
+      - JwtSettings__Issuer=WebQueryTool
+      - JwtSettings__Audience=WebQueryTool-Users
+      - JwtSettings__ExpirationMinutes=60
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - webquerytool-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (Angular 19)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: webquerytool-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - webquerytool-network
+    environment:
+      - API_URL=http://backend:8080
+
+volumes:
+  postgres_data:
+
+networks:
+  webquerytool-network:
+    driver: bridge
