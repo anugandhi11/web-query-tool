@@ -100,10 +100,45 @@ The API will be available at `https://localhost:5001` (or `http://localhost:5000
 
 Access the Swagger UI at: `https://localhost:5001/swagger`
 
+### Running with Docker
+
+Build and run using Docker Compose:
+```bash
+docker-compose up --build
+```
+
+Or build and run manually:
+```bash
+docker build -t webquerytool-api .
+docker run -p 5000:80 webquerytool-api
+```
+
+The API will be available at `http://localhost:5000`
+
+### Running Tests
+
+Run all tests:
+```bash
+dotnet test
+```
+
+Run tests with coverage:
+```bash
+dotnet test --collect:"XPlat Code Coverage"
+```
+
+Run tests in watch mode:
+```bash
+dotnet watch test --project tests/WebQueryTool.Api.Tests
+```
+
 ## Project Structure
 
 ```
 web-query-tool/
+├── .github/
+│   └── workflows/
+│       └── dotnet.yml          # CI/CD workflow
 ├── src/
 │   └── WebQueryTool.Api/
 │       ├── Controllers/
@@ -117,15 +152,83 @@ web-query-tool/
 │       ├── Program.cs
 │       ├── appsettings.json
 │       └── WebQueryTool.Api.csproj
+├── tests/
+│   └── WebQueryTool.Api.Tests/
+│       ├── Controllers/
+│       │   └── WebQueryControllerTests.cs
+│       ├── Services/
+│       │   └── WebQueryServiceTests.cs
+│       └── WebQueryTool.Api.Tests.csproj
+├── Dockerfile                   # Docker build configuration
+├── docker-compose.yml           # Docker Compose configuration
+├── .editorconfig                # Code formatting rules
 └── WebQueryTool.sln
 ```
 
 ## NuGet Packages Used
 
+### API
 - **Microsoft.AspNetCore.OpenApi** (8.0.0): OpenAPI support
 - **Swashbuckle.AspNetCore** (6.5.0): Swagger UI
 - **HtmlAgilityPack** (1.11.57): HTML parsing
 - **AngleSharp** (1.1.2): Advanced HTML parsing and DOM manipulation
+
+### Tests
+- **xUnit** (2.6.2): Testing framework
+- **Moq** (4.20.70): Mocking framework
+- **FluentAssertions** (6.12.0): Fluent assertion library
+- **Microsoft.NET.Test.Sdk** (17.8.0): .NET Test SDK
+
+## CI/CD
+
+The project includes GitHub Actions workflow that:
+- Builds the project on every push and pull request
+- Runs all unit tests
+- Collects code coverage
+- Publishes build artifacts
+- Builds Docker image
+
+## Example Usage
+
+### Using cURL
+
+Get text content from a webpage:
+```bash
+curl "http://localhost:5000/api/webquery/text?url=https://example.com"
+```
+
+Query with CSS selector:
+```bash
+curl "http://localhost:5000/api/webquery/text?url=https://example.com&selector=.main-content"
+```
+
+Post query with JSON:
+```bash
+curl -X POST http://localhost:5000/api/webquery/query \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com",
+    "selector": "article",
+    "queryType": "Text"
+  }'
+```
+
+### Using PowerShell
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:5000/api/webquery/metadata?url=https://example.com"
+```
+
+## Development
+
+### Code Style
+The project uses `.editorconfig` for consistent code formatting. Most modern IDEs will automatically apply these rules.
+
+### Adding New Features
+1. Create feature branch from main
+2. Implement feature with tests
+3. Ensure all tests pass: `dotnet test`
+4. Submit pull request
 
 ## License
 
