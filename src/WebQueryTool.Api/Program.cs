@@ -13,6 +13,10 @@ builder.Services.AddHttpClient();
 // Add web query service
 builder.Services.AddScoped<IWebQueryService, WebQueryService>();
 
+// Add database services
+builder.Services.AddSingleton<IConnectionManager, ConnectionManager>();
+builder.Services.AddScoped<IDatabaseService, DatabaseService>();
+
 // Add CORS
 builder.Services.AddCors(options =>
 {

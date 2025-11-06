@@ -1,0 +1,72 @@
+<div class="sql-editor-container">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <select
+        [(ngModel)]="selectedConnectionId"
+        class="connection-select"
+        [disabled]="executing"
+      >
+        <option value="">Select a database connection...</option>
+        <option *ngFor="let conn of connections" [value]="conn.id">
+          {{ conn.name }} ({{ conn.provider }} - {{ conn.host }}/{{ conn.database }})
+        </option>
+      </select>
+    </div>
+
+    <div class="toolbar-right">
+      <button
+        class="btn-execute"
+        (click)="executeQuery()"
+        [disabled]="executing || !selectedConnectionId"
+      >
+        {{ executing ? 'Executing...' : 'Execute (F5)' }}
+      </button>
+      <button
+        class="btn-export"
+        (click)="exportToCSV()"
+        [disabled]="!queryResult || !queryResult.rows"
+      >
+        Export CSV
+      </button>
+    </div>
+  </div>
+
+  <div class="editor-wrapper">
+    <div #editorContainer class="monaco-editor-container"></div>
+  </div>
+
+  <div class="results-container" *ngIf="queryResult || error">
+    <div class="results-header">
+      <h3>Query Results</h3>
+      <div class="results-info" *ngIf="queryResult">
+        <span>{{ queryResult.rowCount }} row(s) returned</span>
+        <span class="execution-time">Execution time: {{ queryResult.executionTimeMs }}ms</span>
+      </div>
+    </div>
+
+    <div class="alert alert-error" *ngIf="error">
+      <strong>Error:</strong> {{ error }}
+    </div>
+
+    <div class="alert alert-success" *ngIf="queryResult && queryResult.success && !queryResult.rows">
+      {{ queryResult.errorMessage || 'Query executed successfully' }}
+    </div>
+
+    <div class="table-wrapper" *ngIf="queryResult && queryResult.success && queryResult.rows">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th *ngFor="let col of queryResult.columnNames">{{ col }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of queryResult.rows">
+            <td *ngFor="let col of queryResult.columnNames!">
+              {{ formatValue(row[col]) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
